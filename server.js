@@ -28,7 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://FG-Projects:Salerno2008@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
+        mongoUrl: 'mongodb+srv://FG-Projects:<password>@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
     }),
     cookie: {
         httpOnly: true,
