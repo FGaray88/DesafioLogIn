@@ -10,6 +10,11 @@ const socket = io();
 
 // chat
 
+const welcomeTitle = (name) => {
+    const html = `<strong>Bienvenido ${name}</strong>`
+    document.getElementById('welcome-title').innerHTML = html;
+};
+
 const renderMessage = (socketId, data) => {
     const div = document.createElement('div');
     let className;

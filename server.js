@@ -28,7 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://FG-Projects:<password>@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
+        mongoUrl: 'mongodb+srv://FG-Projects:Salerno2008@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
     }),
     cookie: {
         httpOnly: true,
@@ -38,23 +38,32 @@ app.use(session({
 }));
 
 
+app.set('views', './views');
+app.set('view engine', 'ejs');
+
+
 /* app.use("/api", apiRoutes); */
 
 app.get('/', async (req, res) => {
     const user = await req.session.user;
+    console.log("user home => ", req.session.user);
     if (user) {
-        return res.sendFile(__dirname + '/public/profiles.html');
+        return res.sendFile(__dirname + 'profile.ejs', { sessionUser: user });
     }
     else {
         return res.sendFile(__dirname + '/public/login.html');
     }
 });
 
+app.get('/profile', async (req, res) => {
+    const user = await req.session.user;
+    console.log("user profile => ", req.session.user);
+    res.render('profile.ejs', { sessionUser: "Yo" });
+});
+
 app.post('/login', (req, res) => {
     const { name } = req.body;
     const user = users.find(user => user.name == name);
-    console.log("name log => ",name);
-    console.log("user log => ",user);
     if (!user) return res.redirect('/error');
     req.session.user = user;
     req.session.save((err) => {
@@ -62,15 +71,12 @@ app.post('/login', (req, res) => {
             console.log("Session error => ", err);
             return res.redirect('/error');
         }
-        console.log("log en /login => ", req.session.user);
+        console.log("user login => ", req.session.user);
         res.redirect('/profile');
-    })
+    });
 });
 
-app.get('/profile', async (req, res) => {
-    const user = await req.session.user;
-    return res.sendFile(__dirname + '/public/profile.html');
-});
+
 
 
 
@@ -103,7 +109,7 @@ const mensajeTest = {
 
 
 
-io.on("connection", async (socket) => {
+/* io.on("connection", async (socket) => {
     console.log("Nuevo usuario conectado");
     const productos = await products.getAll()
     socket.emit("products", [...productos]);
@@ -127,7 +133,7 @@ io.on("connection", async (socket) => {
         await messages.save({ username, text, created_at })
         io.emit("chat-message", newMessage);
     });
-});
+}); */
 
 
 
