@@ -28,7 +28,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://FG-Projects:Salerno2008@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
+        mongoUrl: 'mongodb+srv://FG-Projects:<Password>@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
     }),
     cookie: {
         httpOnly: true,
@@ -86,24 +86,6 @@ app.post('/login', (req, res) => {
 httpServer.listen(PORT, () => {
     console.log(`Servidor funcionando en el puerto ${PORT}`);
 });
-
-const dataTest = [
-    {
-        id: 16,
-        name: 'Conga ',
-        thumbnail: 'https://http2.mlstatic.com/D_NQ_NP_2X_808063-MLA44860963831_022021-F.webp',
-        description: 'Pantalla OLED T',
-        price: 1300000,
-        stock: 500,
-        code: 1016
-    }
-]
-
-const mensajeTest = {
-    username: 'Walter',
-    text: 'Que honduras!',
-    created_at: null
-}
 
 
 
