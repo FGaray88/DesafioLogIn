@@ -5,7 +5,7 @@ const { formatMessage } = require("./utils/utils")
 const apiRoutes = require("./routers/app.routers");
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-
+const envConfig = require("./config")
 
 
 
@@ -29,7 +29,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://FG-Projects:Salerno2008@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
+        mongoUrl: `mongodb+srv://FG-Projects:${envConfig.DB_PASSWORD}@fg-cluster.byfsgny.mongodb.net/ecommerce?retryWrites=true&w=majority`
     }),
     cookie: {
         httpOnly: true,
@@ -66,14 +66,14 @@ app.post('/login', (req, res) => {
     const { name } = req.body;
     const user = users.find(user => user.name == name);
     if (!user) return res.redirect('/error');
-    req.session.user = user.name;
+    req.session.user = name;
     req.session.save((err) => {
         if (err) {
             console.log("Session error => ", err);
             return res.redirect('/error');
         }
         console.log("user login => ", req.session.user);
-        res.redirect('/profile');
+        res.redirect('/');
     });
 });
 
