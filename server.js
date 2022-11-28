@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo');
 
 
 
+
 const PORT = process.env.PORT || 8080;
 const app = express();
 const httpServer = new HttpServer(app);
@@ -28,7 +29,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://FG-Projects:<Password>@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
+        mongoUrl: 'mongodb+srv://FG-Projects:Salerno2008@fg-cluster.byfsgny.mongodb.net/sessions?retryWrites=true&w=majority',
     }),
     cookie: {
         httpOnly: true,
@@ -58,14 +59,14 @@ app.get('/', async (req, res) => {
 app.get('/profile', async (req, res) => {
     const user = await req.session.user;
     console.log("user profile => ", req.session.user);
-    res.render('profile.ejs', { sessionUser: "Yo" });
+    res.render('profile.ejs', { sessionUser: user });
 });
 
 app.post('/login', (req, res) => {
     const { name } = req.body;
     const user = users.find(user => user.name == name);
     if (!user) return res.redirect('/error');
-    req.session.user = user;
+    req.session.user = user.name;
     req.session.save((err) => {
         if (err) {
             console.log("Session error => ", err);
