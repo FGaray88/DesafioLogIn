@@ -28,13 +28,12 @@ app.use(session({
     secret: 'top-secret-51',
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     store: MongoStore.create({
         mongoUrl: `mongodb+srv://FG-Projects:${envConfig.DB_PASSWORD}@fg-cluster.byfsgny.mongodb.net/ecommerce?retryWrites=true&w=majority`
     }),
     cookie: {
-        httpOnly: true,
-        secure: true,
-        maxAge: 20000
+        maxAge: 60000
     }
 }));
 
@@ -49,7 +48,7 @@ app.get('/', async (req, res) => {
     const user = await req.session.user;
     console.log("user home => ", req.session.user);
     if (user) {
-        return res.sendFile(__dirname + 'profile.ejs', { sessionUser: user });
+        return res.redirect("/profile")
     }
     else {
         return res.sendFile(__dirname + '/public/login.html');
@@ -58,8 +57,8 @@ app.get('/', async (req, res) => {
 
 app.get('/profile', async (req, res) => {
     const user = await req.session.user;
-    console.log("user profile => ", req.session.user);
-    res.render('profile.ejs', { sessionUser: user });
+    if (!user) { res.redirect('/'); }
+    res.render('home.ejs', { sessionUser: user });
 });
 
 app.post('/login', (req, res) => {
@@ -72,9 +71,26 @@ app.post('/login', (req, res) => {
             console.log("Session error => ", err);
             return res.redirect('/error');
         }
-        console.log("user login => ", req.session.user);
         res.redirect('/');
     });
+});
+
+app.get('/logout', async (req, res) => {
+    const user = req.session?.user
+    if (user) {
+        req.session.destroy(err => {
+            if (!err) {
+                res.clearCookie('my-session');
+                res.render("logout.ejs", { sessionUser: user })
+                
+            } else {
+                res.clearCookie('my-session');
+                res.redirect('/')
+            }
+        })
+    } else {
+        res.redirect('/')
+    }
 });
 
 
